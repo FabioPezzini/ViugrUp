@@ -1,0 +1,15 @@
+<scenario>
+  <description> Si vuole creare una struttura con 1 macchina
+    Windows in bridged con un container Linux in una rete
+    privata con altre due
+  </description>
+
+  <machine>
+    <machine_name>LinuxVirtual</machine_name>
+    <machine_base>Ubuntu</machine_base>
+    <version>16.04</version>
+    <provider>VirtualBox</provider>
+    <public_network>192.160.2.2</public_network>
+  </machine>
+
+</scenario>

@@ -1,0 +1,79 @@
+require './utils/vagrantfile_reader'
+require './modules/LAMP/LAMP_m'
+
+class InstallService
+  def initialize(args)
+    if args.length == 4
+      parse_args(args)
+    else
+      begin
+        raise WrongCommandSyntax, 'Wrong syntax for the command'
+      rescue WrongCommandSyntax => e
+        puts e.message
+      end
+    end
+  end
+
+  def parse_args(args)
+    begin
+      if $os.to_s.eql? 'windows'
+        @separator = '\\'
+      else
+        @separator = '/'
+      end
+      @path_project = $path_folder + @separator + args[0].to_s
+      raise NotFound, "Project doesn't exist" unless Dir.exist?(@path_project)
+
+      @name_vm = args[2].to_s
+      @file_name = args[0].to_s
+      @module = args[3].to_s
+      raise NotFound, 'Vm not include in the specified project' unless check_vm(args[0].to_s)
+
+      if %w[-vm].include?(args[1])
+        parse_flag(args)
+      else
+        raise WrongCommandSyntax, 'No existing flag for the command'
+      end
+    end
+  rescue StandardError => e
+    puts e.message
+  end
+
+  def check_vm(folder)
+    vr = VagrantFileReader.new(folder)
+    vr.search_vm(@name_vm)
+  end
+
+  def parse_flag(args)
+    create_puppet_folders if args[1] == '-vm'
+  end
+
+  def create_puppet_folders
+    path_puppet = @path_project + @separator + 'puppet'
+    path_manifest = path_puppet + @separator + 'manifests'
+    path_module = path_puppet + @separator + 'modules'
+    value = File.exist?(path_puppet.to_s)
+    if value == false
+      Dir.mkdir(path_puppet)
+      Dir.mkdir(path_manifest)
+      Dir.mkdir(path_module)
+    end
+    puppet_file = path_manifest + @separator + @name_vm.to_s + '.pp'
+    unless File.exist?puppet_file
+      File.open(puppet_file, 'w')
+      add_provision_vagrantfile
+    end
+    parse_module
+  end
+
+  def add_provision_vagrantfile
+    vr = VagrantFileReader.new(@file_name)
+    vr.update_with_provision(@name_vm) unless vr.already_puppet(@name_vm)
+    puts 'FILE SOVRASCRITTO!'
+  end
+
+  def parse_module()
+    Lamp.new(@file_name,@name_vm)if @module == '--lamp'
+  end
+
+end

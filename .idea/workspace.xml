@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2abde0b8-e6e8-47b1-a3bb-7b652d8a1d91" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Ruby File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1RVxjljqxpOYKTaRfMKZR1tiCA1" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/utils" />
+      <recent name="C:\Users\Fabio\RubymineProjects\SlinkyEnv\modules\LAMP" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="viugrup" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
+      <module name="SlinkyEnv" />
+      <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$MODULE_DIR$" />
+      <RUBY_RUN_CONFIG NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RUBY_RUN_CONFIG NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RUBY_RUN_CONFIG NAME="myPassParentEnvs" VALUE="true" />
+      <EXTENSION ID="BundlerRunConfigurationExtension" bundleExecEnabled="false" />
+      <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
+      <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov">
+        <COVERAGE_PATTERN ENABLED="true">
+          <PATTERN REGEXPS="/.rvm/" INCLUDED="false" />
+        </COVERAGE_PATTERN>
+      </EXTENSION>
+      <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$MODULE_DIR$/viugrup.rb" />
+      <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Ruby.viugrup" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpringUtil" SPRING_PRE_LOADER_OPTION="true" RAKE_SPRING_PRE_LOADER_OPTION="true" RAILS_SPRING_PRE_LOADER_OPTION="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2abde0b8-e6e8-47b1-a3bb-7b652d8a1d91" name="Default Changelist" comment="" />
+      <created>1569766201692</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1569766201692</updated>
+      <workItem from="1569766203519" duration="1381000" />
+      <workItem from="1569777306158" duration="1407000" />
+      <workItem from="1569923745783" duration="12079000" />
+      <workItem from="1569952748301" duration="2399000" />
+      <workItem from="1570014859358" duration="19768000" />
+      <workItem from="1570277027570" duration="9873000" />
+      <workItem from="1570355029901" duration="9232000" />
+      <workItem from="1570370480512" duration="8604000" />
+      <workItem from="1570479988971" duration="4042000" />
+      <workItem from="1570527329871" duration="17122000" />
+      <workItem from="1570618483346" duration="24908000" />
+      <workItem from="1570689995588" duration="1308000" />
+      <workItem from="1570790950875" duration="46000" />
+      <workItem from="1571397897043" duration="392000" />
+      <workItem from="1571601610471" duration="212000" />
+      <workItem from="1573248050101" duration="30000" />
+      <workItem from="1573248150811" duration="1607000" />
+      <workItem from="1573322595731" duration="1768000" />
+      <workItem from="1573328732228" duration="3206000" />
+      <workItem from="1573423060200" duration="3153000" />
+      <workItem from="1573487473090" duration="2057000" />
+      <workItem from="1573515075154" duration="5142000" />
+      <workItem from="1573687299189" duration="4760000" />
+      <workItem from="1573703270487" duration="1240000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SlinkyEnv@slinkyenv.rcov" NAME="viugrup Coverage Results" MODIFIED="1573331109290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="SlinkyEnv" />
+    <SUITE FILE_PATH="coverage/SlinkyEnv@main.rcov" NAME="main Coverage Results" MODIFIED="1569777460170" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="SlinkyEnv" />
+    <SUITE FILE_PATH="coverage/SlinkyEnv@viugrup.rcov" NAME="viugrup Coverage Results" MODIFIED="1573703400139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="SlinkyEnv" />
+  </component>
+</project>
