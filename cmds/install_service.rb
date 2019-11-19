@@ -3,7 +3,7 @@ require './modules/LAMP/LAMP_m'
 
 class InstallService
   def initialize(args)
-    if args.length == 4
+    if args.length == 3
       parse_args(args)
     else
       begin
@@ -24,29 +24,23 @@ class InstallService
       @path_project = $path_folder + @separator + args[0].to_s
       raise NotFound, "Project doesn't exist" unless Dir.exist?(@path_project)
 
-      @name_vm = args[2].to_s
+      @name_vm = args[1].to_s
       @file_name = args[0].to_s
-      @module = args[3].to_s
-      raise NotFound, 'Vm not include in the specified project' unless check_vm(args[0].to_s)
+      @module = args[2].to_s
+      raise NotFound, 'Vm not include in the specified project' unless check_vm
 
-      if %w[-vm].include?(args[1])
-        parse_flag(args)
-      else
-        raise WrongCommandSyntax, 'No existing flag for the command'
-      end
+      create_puppet_folders
+
     end
   rescue StandardError => e
     puts e.message
   end
 
-  def check_vm(folder)
-    vr = VagrantFileReader.new(folder)
+  def check_vm
+    vr = VagrantFileReader.new(@file_name)
     vr.search_vm(@name_vm)
   end
 
-  def parse_flag(args)
-    create_puppet_folders if args[1] == '-vm'
-  end
 
   def create_puppet_folders
     path_puppet = @path_project + @separator + 'puppet'
@@ -72,8 +66,8 @@ class InstallService
     puts 'FILE SOVRASCRITTO!'
   end
 
-  def parse_module()
-    Lamp.new(@file_name,@name_vm)if @module == '--lamp'
+  def parse_module
+    Lamp.new(@file_name,@name_vm) if @module == '--lamp'
   end
 
 end

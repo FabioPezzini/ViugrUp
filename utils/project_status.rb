@@ -1,6 +1,7 @@
 class ProjectStatus
   def initialize; end
 
+  # Method that return the status of the machines in a specific project
   # return 1 -> running , 0 -> poweroff, -1 -> not created
   def project_status(path_to_folder)
     value = -1

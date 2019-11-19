@@ -1,10 +1,13 @@
+require 'colorize'
 require './utils/vagrantfile_reader'
+require './utils/project_status'
 
 class ListProject
   def initialize(args)
     parse_args(args)
   end
 
+  # Check if the flag passed exists
   def parse_args(args)
     begin
       if %w[-up -all].include?args[0]
@@ -14,7 +17,7 @@ class ListProject
       end
     end
   rescue WrongCommandSyntax => e
-    puts e.message
+    puts e.message.colorize(:red)
   end
 
   def parse_flag(args)
@@ -22,28 +25,34 @@ class ListProject
     list_active if args[0] == '-up'
   end
 
+  # Print the machines of every project in Viugrup folder
   def list_all
-    puts 'SlinkyEnv'
+    to_print = 'ViugrUp'
+    puts to_print.colorize(:green)
     projects = Dir.entries($path_folder).reject { |f| File.directory?(f) || f[0].include?('.') }
     projects.each do |x|
       output_status(x)
     end
   end
 
+  # Print only the running machines of every project in Viugrup folder
   def list_active
-    puts 'SlinkyEnv - Running...'
+    to_print = 'ViugrUp - Running...'
+    puts to_print.colorize(:green)
 
+    ps = ProjectStatus.new
     projects = Dir.entries($path_folder).reject { |f| File.directory?(f) || f[0].include?('.') }
     projects.each do |x|
-      output_status(x) if project_is_up(x.to_s)
+      output_status(x) if ps.project_status(x.to_s) == 1
     end
   end
 
-  def output_status(x)
-    v_reader = VagrantFileReader.new(x)
+  # Default output for list commands
+  def output_status(project)
+    v_reader = VagrantFileReader.new(project)
     v_reader.read
     print '|__'
-    puts x.to_s
+    puts project.to_s
     hostname = v_reader.get_hostname
     box = v_reader.get_box
     count = 0
@@ -54,22 +63,5 @@ class ListProject
       count += 1
       puts ''
     end
-  end
-
-  def project_is_up(folder)
-    value = false
-    if $os.to_s.eql? 'windows'
-      path = $path_folder + '\\' + folder.to_s
-      cmd = 'powershell.exe cd ' + path.to_s + ';' + ' vagrant status'
-    else
-      path = $path_folder + '/' + folder.to_s
-      cmd = 'cd ' + path.to_s + ';' + ' vagrant status'
-
-    end
-    Open3.popen3(cmd) do |_stdin, stdout, _stderr, _wait_thr|
-      out = stdout.read
-      value = true if out.include? 'running'
-    end
-    value
   end
 end

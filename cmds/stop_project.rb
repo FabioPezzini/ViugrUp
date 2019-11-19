@@ -1,3 +1,5 @@
+require 'colorize'
+
 class StopProject
   def initialize(args)
     if args.length == 2
@@ -11,6 +13,7 @@ class StopProject
     end
   end
 
+  # Check if a project with same name passed in cli already exists
   def check_projects(args)
     projects = Dir.entries($path_folder).reject { |f| File.directory?(f) || f[0].include?('.') }
     if projects.to_s.include?args[0].to_s
@@ -19,11 +22,12 @@ class StopProject
       begin
         raise NotFound, 'Project ' + args[0].to_s + "doesn't exist"
       rescue NotFound => e
-        puts e.message
+        puts e.message.colorize(:red)
       end
     end
   end
 
+  # Check if the flag passed exists
   def parse_args(args)
     begin
       if %w[-all].include?args[1]
@@ -33,14 +37,15 @@ class StopProject
       end
     end
   rescue WrongCommandSyntax => e
-    puts e.message
+    puts e.message.colorize(:red)
   end
 
   def parse_flag(args)
-    run_all(args) if args[1] == '-all'
+    stop_all(args) if args[1] == '-all'
   end
 
-  def run_all(args)
+  # Stop the machines in the project
+  def stop_all(args)
     if $os.to_s.eql? 'windows'
       path_to_folder = $path_folder + '\\' + args[0].to_s
       cmd = 'powershell.exe cd ' + path_to_folder.to_s + ';' + ' vagrant halt'
@@ -53,6 +58,7 @@ class StopProject
         puts line
       end
     end
-    puts 'INFO:' + 'Project stopped successfully'
+    to_print = 'INFO:' + 'Project stopped successfully'
+    puts to_print.colorize(:light_blue)
   end
 end

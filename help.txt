@@ -1,31 +1,25 @@
-**************************************************************************************
-    [ COMMAND ]                           [ RESULT ]
-**************************************************************************************
-
-==> createp [name] <flag>   - create a new project
-                                    with given name
-                   -xml     <lab>        - create a custom project with
-                                      provision value provided in the file
-                   -search  <num>        - give to the user the opportunity to choose
-                                      the box by the os name
-                                      (another line will ask you the os)
-                   -cloud  <num>         - use a custom box provided in the Vagrant Cloud Boxes
-                                      (another line will ask you the box name)
-
-
-==> run [name] <flag>               - run the project by name
-               -all
-
-==> stop [name] <flag>              - stop the project by name
-                -all
-
-==> installin [proj_name] <flag> [m_name]
-                          -vm
-
-==> list <flag>                     - return a list of projects
-         -up                        - return a list of current running projects
-         -all                       - return a list of created projects
-
-==> help                            - print help
-
-==> exit                            - exit
+********************************************************************************************************
+           [ COMMAND ]           |                           [ RESULT ]
+********************************************************************************************************
+                                 |
+=> createp [name] <flag>         |
+                   -xml    <lab>  - create a new project with with specs in xml file located in labs dir
+                   -search <num>  - create a new project by cli (another line will ask OS)
+                   -cloud  <num>  - use a custom box provided in the Vagrant Cloud Boxes
+                                    (another line will ask you the box id)
+                                 |
+=> run [name] <flag>             |
+               -all               - run the project by name
+                                 |
+=> stop [name] <flag>            |
+                -all              - stop the project by name
+                                 |
+=> list <flag>                   |
+         -up                      - return a list of current running projects
+         -all                     - return a list of created projects
+                                 |
+=> installin [proj_name] [m_name]
+                                 |
+=> help                           - print help
+                                 |
+=> exit                           - exit

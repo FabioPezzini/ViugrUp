@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+require 'colorize'
 
 require './cmds/create_project'
 require './cmds/list_project'
@@ -35,10 +36,10 @@ begin
       begin
       raise WrongCommandSyntax, 'command not found'
       rescue WrongCommandSyntax => e
-        puts e.message
+        puts e.message.colorize(:red)
       end
     end
   end
 rescue StandardError => e
-  puts e.message
+  puts e.message.colorize(:red)
 end

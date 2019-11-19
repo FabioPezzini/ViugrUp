@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    colorize (0.8.1)
     httparty (0.17.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
@@ -19,6 +20,7 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
+  colorize
   httparty
   nokogiri
   vagrant-wrapper (~> 2.0, >= 2.0.3)

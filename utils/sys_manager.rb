@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'colorize'
 require 'rbconfig'
 require 'vagrant-wrapper'
 
@@ -28,7 +28,8 @@ class SysManager
     end
 
     if check_viugrup_folder == false
-      puts 'INFO: A folder for your project has been created.'
+      to_print = 'INFO: A folder for your project has been created.'
+      puts to_print.colorize(:light_blue)
     end
   end
 

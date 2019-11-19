@@ -1,19 +1,20 @@
+require 'colorize'
 require './utils/project_status'
 
 class RunProject
   def initialize(args)
-
     if args.length == 2
       check_projects(args)
     else
       begin
         raise WrongCommandSyntax, 'Wrong syntax for the command'
       rescue WrongCommandSyntax => e
-        puts e.message
+        puts e.message.colorize(:red)
       end
     end
   end
 
+  # Check if a project with same name passed in cli already exists
   def check_projects(args)
     projects = Dir.entries($path_folder).reject { |f| File.directory?(f) || f[0].include?('.') }
     if projects.to_s.include?args[0].to_s
@@ -22,11 +23,12 @@ class RunProject
       begin
         raise NotFound, 'Project ' + args[0].to_s + "doesn't exist"
       rescue NotFound => e
-        puts e.message
+        puts e.message.colorize(:red)
       end
     end
   end
 
+  # Check if the flag passed exists
   def parse_args(args)
     begin
       if %w[-all].include?args[1]
@@ -36,7 +38,7 @@ class RunProject
       end
     end
   rescue WrongCommandSyntax => e
-    puts e.message
+    puts e.message.colorize(:red)
   end
 
   def parse_flag(args)
@@ -63,6 +65,7 @@ class RunProject
         puts line
       end
     end
-    puts 'INFO:' + 'Project started successfully'
+    to_print = 'INFO:' + 'Project started successfully'
+    puts to_print.colorize(:light_blue)
   end
 end

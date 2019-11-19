@@ -1,6 +1,6 @@
 <scenario>
   <description> Si vuole creare una struttura con 1 macchina
-    Windows in bridged con un container Linux in una rete
+    Windows in bridged con un container Linux,quest'ultima in una rete
     privata con altre due
   </description>
 
