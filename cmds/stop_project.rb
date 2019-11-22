@@ -58,6 +58,10 @@ class StopProject
         puts line
       end
     end
+    #TODO
+    #cmd = 'docker network prune -f'
+    #Open3.popen3(cmd) do |_stdin, stdout, _stderr, _wait_thr|
+    #end
     to_print = 'INFO:' + 'Project stopped successfully'
     puts to_print.colorize(:light_blue)
   end

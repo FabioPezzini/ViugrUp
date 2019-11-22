@@ -8,6 +8,7 @@ require './cmds/run_project'
 require './cmds/stop_project'
 require './cmds/install_service'
 require './utils/box_getter'
+
 require './utils/sys_manager'
 require './exceptions/wrong_command_syntax'
 
