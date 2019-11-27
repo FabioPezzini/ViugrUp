@@ -1,15 +1,14 @@
 <scenario>
-  <description> Si vuole creare una struttura con 1 macchina
-    Windows in bridged con un container Linux,quest'ultima in una rete
-    privata con un altro container run -d -t -i a1765e8e381e /bin/bash
-    SUBN e' da usare solo su macchine virtualbox-docker o docker-docker
+  <description>
   </description>
 
   <machine>
     <machine_name>Debian</machine_name>
     <machine_base>Debian</machine_base>
     <provider>VirtualBox</provider>
-    <public_network>dhcp</public_network>
+    <public_network>
+      <ip>dhcp</ip>
+    </public_network>
   </machine>
 
 </scenario>

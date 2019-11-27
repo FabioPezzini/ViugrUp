@@ -1,9 +1,6 @@
 <scenario>
   <description> Si vuole creare una struttura con 1 macchina
-    Windows in bridged con un container Linux,quest'ultima in una rete
-    privata con un altro container run -d -t -i a1765e8e381e /bin/bash
-    SUBN e' da usare solo su macchine virtualbox-docker o docker-docker
-    NON UTILIZZARE LO STESSO NOME DELLA SUB N PER PIU PROGETTI
+    Linux in bridged con un container Linux
   </description>
 
   <machine>
@@ -11,17 +8,24 @@
     <machine_base>Ubuntu</machine_base>
     <version>16.04</version>
     <provider>VirtualBox</provider>
-    <public_network>dhcp</public_network>
-    <sub_public_network>fase1</sub_public_network>
+    <public_network>
+      <network_name>fase1</network_name>
+      <ip>dhcp</ip>
+    </public_network>
+    <private_network>
+      <ip>dhcp</ip>
+    </private_network>
   </machine>
 
   <machine>
     <machine_name>Slave-Conn</machine_name>
     <docker_image>kalilinux/kali-linux-docker</docker_image>
     <provider>Docker</provider>
-    <public_network>dhcp</public_network>
-    <sub_public_network>fase1</sub_public_network>
-    <private_network>dhcp</private_network>
+    <public_network>
+      <network_name>fase1</network_name>
+      <ip>dhcp</ip>
+    </public_network>
+
   </machine>
 
 </scenario>

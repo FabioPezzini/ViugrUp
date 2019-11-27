@@ -23,8 +23,9 @@ class XmlReader
     @machine_base = Array[]
     @machine_version = Array[]
     @provider = Array[]
-    @public_network = Array[]
-    @sub_public_network = Array[]
+    @public_network_name = Array[]
+    @public_network_ip = Array[]
+    @private_network_ip = Array[]
     @docker_image = Array[]
   end
 
@@ -52,14 +53,18 @@ class XmlReader
       end
       @provider.push(machine.at_xpath('provider').content)
       if machine.at_xpath('public_network') != nil
-        @public_network.push(machine.at_xpath('public_network').content)
-      else
-        @public_network.push('')
+        machine.xpath('//public_network').each do |network|
+          if network.at_xpath('network_name') != nil
+            @public_network_name.push(network.at_xpath('network_name').content)
+          else
+            @public_network_name.push('')
+          end
+          @public_network_ip.push(network.at_xpath('ip').content)
+        end
       end
-      if machine.at_xpath('sub_public_network') != nil
-        @sub_public_network.push(machine.at_xpath('sub_public_network').content)
-      else
-        @sub_public_network.push('')
+      next unless machine.at_xpath('private_network') != nil
+      machine.xpath('//private_network').each do |network|
+        @private_network_ip.push(network.at_xpath('ip').content)
       end
     end
     create_machine(file)
@@ -90,13 +95,14 @@ class XmlReader
     pub_subn_VD = {} #Hashmap that contains machine in same sub if Docker cont e VM machines
     pub_subn_DD = {}
     check_pub_subn(pub_subn_VD, pub_subn_DD)
-    for i in 0..(@machine_base.length-1)
+    (0..(@machine_base.length - 1)).each { |i|
       file.puts '  config.vm.define "' + @machine_name[i].to_s + '" do |vm' + i.to_s + '|'
       add_machine_name(file, i) if @machine_name[i].to_s != nil
       add_machine_provider(file, i) if @provider[i].to_s != nil
-      add_public_network(file, i, pub_subn_VD) if !@public_network[i].to_s.empty?
+      add_public_network(file, i, pub_subn_VD) unless @public_network_ip[i].empty?
+      add_private_network(file, i) unless @private_network_ip[i].empty?
       file.puts '  end'
-    end
+    }
 
     to_print = 'Project created succesfully!'
     puts to_print.colorize(:light_blue)
@@ -104,48 +110,66 @@ class XmlReader
 
   # Check if there are machine in the same subn
   def check_pub_subn(pub_subn_VD, pub_subn_DD)
-    for i in 0..(@machine_base.length-2)
-      for b in i+1..(@machine_base.length-1)
-        if @sub_public_network[i].to_s.casecmp(@sub_public_network[b].to_s) == 0 ## Se sono nella stessa subn (True)
-          if (@provider[i].to_s.casecmp('DOCKER') == 0 && @provider[b].to_s.casecmp(@provider[i].to_s) == 0) #Se sono entrambi Docker
-            if pub_subn_DD.key?(@sub_public_network[i].to_s) #Se l'hash contiene gia' la subn
-              pub_subn_DD[@sub_public_network[i].to_s].push(i.to_s, b.to_s)
+    (0..(@machine_base.length - 2)).each { |i|
+      (i + 1..(@machine_base.length - 1)).each { |b|
+        next unless @public_network_name[i].to_s.casecmp('') != 0
+        if @public_network_name[i].to_s.casecmp(@public_network_name[b].to_s) == 0 ## Se sono nella stessa subn (True)
+          if @provider[i].to_s.casecmp('DOCKER') == 0 && @provider[b].to_s.casecmp(@provider[i].to_s) == 0 #Se sono entrambi Docker
+            if pub_subn_DD.key?(@public_network_name[i].to_s) #Se l'hash contiene gia' la subn
+              pub_subn_DD[@public_network_name[i].to_s].push(i.to_s, b.to_s)
             else
-              pub_subn_DD[@sub_public_network[i].to_s] = [i.to_s, b.to_s]
+              pub_subn_DD[@public_network_name[i].to_s] = [i.to_s, b.to_s]
             end
           else #Sono docker e virtualbox
-            if pub_subn_VD.key?(@sub_public_network[i].to_s) #Se l'hash contiene gia' la subn
-              pub_subn_VD[@sub_public_network[i].to_s].push(i.to_s, b.to_s)
+            if pub_subn_VD.key?(@public_network_name[i].to_s) #Se l'hash contiene gia' la subn
+              pub_subn_VD[@public_network_name[i].to_s].push(i.to_s, b.to_s)
             else
-              pub_subn_VD[@sub_public_network[i].to_s] = [i.to_s, b.to_s]
+              pub_subn_VD[@public_network_name[i].to_s] = [i.to_s, b.to_s]
             end
           end
         end
-      end
-    end
+      }
+    }
   end
 
+  def add_private_network(file,count)
+    if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
+      if @private_network_ip[count].to_s.casecmp('DHCP') == 0 #true
+        file.puts '    vm' + count.to_s + '.vm.network "private_network", type:"dhcp"'
+      else
+        file.puts '    vm' + count.to_s + '.vm.network "private_network", ip:' + '"' + @private_network_ip[count].to_s + '"'
+      end
+    elsif @provider[count].to_s.casecmp('DOCKER') == 0
+      if @public_network_ip[count].to_s.casecmp('DHCP') == 0 #true
+        file.puts '    vm' + count.to_s + '.vm.network "private_network",type: "dhcp", docker_network__internal: true'
+      else
+        file.puts '    vm' + count.to_s + '.vm.network "private_network", ip: "'+@private_network_ip[count].to_s+'", docker_network__internal: true'
+      end
+    end
+
+  end
   def add_public_network(file, count, pub_subn_VD)
     subn = is_in_a_subn?(count, pub_subn_VD)
     if subn != '' #SE QUINDI LA MACCHINA E' IN UNA SUBN
       bridge_interface = 'br-' + create_docker_network(subn).to_s
       if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
-        file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge: [' + get_bridges + ']'
+        ip = @gateway[0..-2] + '4'+ count.to_s
+        file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge:"' + bridge_interface.to_s + '", ip:"' + ip.to_s + '"'
       else #E' docker
         file.puts '    vm' + count.to_s + '.vm.network "public_network", type: "dhcp", bridge:"' + bridge_interface.to_s + '", docker_network_gateway:"' + @gateway.to_s + '",docker_network__ip_range: "' + @gateway.to_s + '/24"'
       end
     else
       if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
-        if @public_network[count].to_s.casecmp('DHCP') == 0 #true
+        if @public_network_ip[count].to_s.casecmp('DHCP') == 0 #true
           file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge: [' + get_bridges + ']'
         else
-          file.puts '    vm' + count.to_s + '.vm.network "public_network", ip:' + '"' + @public_network + '"' + ',bridge: [' + get_bridges + ']'
+          file.puts '    vm' + count.to_s + '.vm.network "public_network", ip:' + '"' + @public_network_ip[count].to_s + '"' + ',bridge: [' + get_bridges + ']'
         end
       elsif @provider[count].to_s.casecmp('DOCKER') == 0
-        if @public_network[count].to_s.casecmp('DHCP') == 0 #true
-        file.puts '    vm' + count.to_s + '.vm.network "public_network", type: "dhcp", bridge: [' + get_bridges + ']'
+        if @public_network_ip[count].to_s.casecmp('DHCP') == 0 #true
+        file.puts '    vm' + count.to_s + '.vm.network "public_network", type: "dhcp", bridge: [' + get_bridges + '] , docker_network_gateway:"192.168.1.1",docker_network__ip_range: "192.168.1.1/24"'
         else
-          file.puts '    vm' + count.to_s + '.vm.network "public_network", ip:' + '"' + @public_network + '"' + ',bridge: [' + get_bridges + ']'
+          file.puts '    vm' + count.to_s + '.vm.network "public_network", ip:' + '"' + @public_network_ip[count].to_s + '"' + ',bridge: [' + get_bridges + ']'
         end
       end
     end
@@ -175,7 +199,7 @@ class XmlReader
         @gateway = '192.168.50.0' #Usato per partire da .1
         count = 1
         @stderr = 'nan'
-        while !@stderr.to_s.empty? #Faccio finche non cancello errori
+        until @stderr.to_s.empty? #Faccio finche non cancello errori
           @gateway = @gateway[0..-4] + count.to_s + '.1'
           cmd = 'docker network create '+ sub_name.to_s + ' --gateway='+ @gateway.to_s + ' --subnet=' + @gateway.to_s + '/24'
           Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
@@ -230,7 +254,7 @@ class XmlReader
       file.puts '    vm' + count.to_s + '.vm.provider "virtualbox"'
     end
     if @provider[count].to_s.casecmp('DOCKER') == 0
-      if !@docker_image[count].to_s.empty?
+      unless @docker_image[count].to_s.empty?
         search_docker_image(file, count)
       end
     end
