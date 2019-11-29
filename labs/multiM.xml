@@ -12,9 +12,6 @@
       <network_name>fase1</network_name>
       <ip>dhcp</ip>
     </public_network>
-    <private_network>
-      <ip>dhcp</ip>
-    </private_network>
   </machine>
 
   <machine>
@@ -25,6 +22,9 @@
       <network_name>fase1</network_name>
       <ip>dhcp</ip>
     </public_network>
+    <private_network>
+      <ip>dhcp</ip>
+    </private_network>
 
   </machine>
 

@@ -1,5 +1,8 @@
 <scenario>
-  <description>
+  <description> Si vuole creare una struttura con 1 macchina
+    Windows in bridged con un container Linux,quest'ultima in una rete
+    privata con un altro container run -d -t -i a1765e8e381e /bin/bash
+    SUBN e' da usare solo su macchine virtualbox-docker o docker-docker
   </description>
 
   <machine>

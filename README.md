@@ -46,15 +46,3 @@ Between the machine's tag of the selected machine you can add:
    1. Inside the private_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 172.17.0.12) or you can insert
     `dhcp` to leave at the wrapper the the burden of choice.
     N.B = The use of `dhcp` is recommended.
- 
-        
-
-                                                                                                  
-
-                  
-
-                                                    
- 
-                                                          
-
- 
