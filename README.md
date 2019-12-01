@@ -40,9 +40,13 @@ Between the machine's tag of the selected machine you can add:
   `dhcp` to leave at the wrapper the the burden of choice.
   N.B = The use of `dhcp` is recommended.
  
-- Private Network: an interface that will make the machine accessible only by the host.
+- Private Network: an interface that will make the machine accessible only by the host and the other machines in same network.
 
   Add a tag `<private_network></private_network>`:
-   1. Inside the private_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 172.17.0.12) or you can insert
+   1. [OPTIONAL] If you are using a scenario with different VirtualBox VM and you want to isolate a group of them for each machine
+   add a tag `<network_name></network_name>` Inside this tag write the name of the network (ex: net1), add it to
+   all the machines that you want isolate together.
+   2. [OPTIONAL] If you want to allow the machine to communicate with the host add a tag `<host></host>` and write Y inside it
+   3. Inside the private_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 172.17.0.12) or you can insert
     `dhcp` to leave at the wrapper the the burden of choice.
     N.B = The use of `dhcp` is recommended.

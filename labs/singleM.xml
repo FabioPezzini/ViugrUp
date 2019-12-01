@@ -9,9 +9,9 @@
     <machine_name>Debian</machine_name>
     <machine_base>Debian</machine_base>
     <provider>VirtualBox</provider>
-    <public_network>
+    <private_network>
       <ip>dhcp</ip>
-    </public_network>
+    </private_network>
   </machine>
 
 </scenario>

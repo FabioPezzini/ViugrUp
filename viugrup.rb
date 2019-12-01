@@ -12,6 +12,7 @@ require './utils/box_getter'
 require './utils/sys_manager'
 require './exceptions/wrong_command_syntax'
 
+
 begin
   sys_m = SysManager.new
   sys_m.check_status

@@ -25,6 +25,8 @@ class XmlReader
     @provider = Array[]
     @public_network_name = Array[]
     @public_network_ip = Array[]
+    @private_network_name = Array[]
+    @host = Array[]
     @private_network_ip = Array[]
     @docker_image = Array[]
   end
@@ -67,14 +69,25 @@ class XmlReader
       end
       if machine.at_xpath('private_network') != nil
         machine.xpath('//private_network').each do |network|
+          if network.at_xpath('network_name') != nil
+            @private_network_name.push(network.at_xpath('network_name').content)
+          else
+            @private_network_name.push('')
+          end
+          if network.at_xpath('host') != nil
+            @host.push(network.at_xpath('host').content)
+          else
+            @host.push('')
+          end
           @private_network_ip.push(network.at_xpath('ip').content)
         end
       else
+        @private_network_name.push('')
+        @host.push('')
         @private_network_ip.push('')
       end
     end
     create_machine(file)
-    close_vagrant_file(file)
   end
 
   # Create the Vagrantfile
@@ -110,8 +123,91 @@ class XmlReader
       file.puts '  end'
     end
 
+    close_vagrant_file(file)
+    configure_isolated_network
+    last_end
     to_print = 'Project created succesfully!'
     puts to_print.colorize(:light_blue)
+  end
+
+  def last_end
+    file = File.open($path_folder + @separator + @project_name + @separator + 'Vagrantfile', 'a')
+    file.puts 'end'
+    file.close
+  end
+
+  def configure_isolated_network
+    machine_priv = Array[]
+    for i in 0.. @machine_base.length-1
+      for b in 0.. @machine_base.length-1
+        if !(i.equal?b)
+          if @private_network_name[i].to_s.casecmp('') != 0 #Se e' in una private network
+            if @private_network_name[i].to_s.casecmp(@private_network_name[b].to_s) == 0 #Se sono nella stessa private network
+              machine_priv.push(@private_network_ip[b].to_s)
+            end
+          end
+        end
+      end
+      if (@provider[i].to_s.casecmp('VIRTUALBOX') == 0 && machine_priv.length != 0)
+        f_get_line = File.open($path_folder + @separator + @project_name + @separator + 'Vagrantfile', 'r')
+        line = get_line_virtualbox(f_get_line,i).to_i
+        f_get_line.close
+
+        to_write = data_to_write(machine_priv,i).to_s
+        write_at(line,to_write)
+      end
+      machine_priv.clear #pulisco per la successiva
+    end
+  end
+
+  def write_at(at_line, sdat)
+    File.open($path_folder + @separator + @project_name + @separator + 'Vagrantfile', 'r+') do |f|
+      while (at_line-=1) > 0          # read up to the line you want to write after
+        f.readline
+      end
+      pos = f.pos                     # save your position in the file
+      rest = f.read                   # save the rest of the file
+      f.seek pos                      # go back to the old position
+      f.write sdat                    # write new data
+      f.write rest                    # write rest of file
+    end
+  end
+
+  def data_to_write(array,count)
+    text = '    vm' + count.to_s + '.vm.provision "shell", inline: <<-SHELL' + "\n"
+    text = text + '      sudo apt-get -y update' + "\n"
+    text = text + '      sudo apt-get -y install iptables' + "\n"
+    for i in 0..array.length-1
+      text = text + '      sudo iptables -A INPUT -s ' + array[i].to_s + ' -j ACCEPT' + "\n"
+      text = text + '      sudo iptables -A OUTPUT -s ' + array[i].to_s + ' -j ACCEPT' + "\n"
+    end
+    if @host[count].to_s.casecmp('') != 0
+      text = add_host(text)
+    end
+    text = text + '      sudo iptables -A INPUT -j DROP' + "\n"
+    text = text + '    SHELL' + "\n"
+    return text
+    end
+
+    def add_host(text)
+      ipH = host_ip.to_s
+      text = text + '      sudo iptables -A INPUT -s ' + ipH.to_s + ' -j ACCEPT' + "\n"
+      text = text + '      sudo iptables -A OUTPUT -s ' + ipH.to_s + ' -j ACCEPT' + "\n"
+      return text
+    end
+
+  def get_line_virtualbox(f,count) #CONTROLLARE
+    to_search = 'vm' + count.to_s + '.vm.provider"virtualbox"'
+    to_search_arr = to_search.bytes.to_a
+    num = 1
+    f.each_line do |line|
+      num += 1
+      line_new = line.gsub(/\s+/, '').chomp
+      line_new_arr = line_new.bytes.to_a
+
+      return num if line_new_arr == to_search_arr
+    end
+
   end
 
   # Check if there are machine in the same subn
@@ -139,24 +235,94 @@ class XmlReader
     end
   end
 
-  def add_private_network(file,count)
-    if @private_network_ip[count].to_s.casecmp('') != 0
-    if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
-      if @private_network_ip[count].to_s.casecmp('DHCP') == 0 #true
-        file.puts '    vm' + count.to_s + '.vm.network "private_network", type:"dhcp"'
+  def add_private_network(file,count) # DA CAMBIARE, BISOGNA FARE IL PROVISIONING CON SHELL e solo con vbox
+    if @private_network_ip[count].to_s.casecmp('') != 0 #Se c'e' una private network
+      if @private_network_name[count].to_s.casecmp('') != 0 #Se definisco una private network name (isolamento tra macchine)
+        create_isolate_env(count)
+        file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge: [' + get_bridges + '] , ip: "' +  @private_network_ip[count].to_s + '"'
+      elsif ((@private_network_name[count].to_s.casecmp('') == 0) && (@host[count].to_s.casecmp('') != 0)) #se voglio solo isolamento con l'host
+        file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge: [' + get_bridges + ']'
+        ipH = host_ip.to_s
+        file.puts '    vm' + count.to_s + '.vm.provision "shell", inline: <<-SHELL'
+        file.puts '      sudo apt-get -y update'
+        file.puts '      sudo apt-get -y install iptables'
+        file.puts '      sudo iptables -A INPUT -s ' + ipH.to_s + ' -j ACCEPT'
+        file.puts '      sudo iptables -A OUTPUT -s ' + ipH.to_s + ' -j ACCEPT'
+        file.puts '      sudo iptables -A INPUT -j DROP'
+        file.puts '    SHELL'
       else
-        file.puts '    vm' + count.to_s + '.vm.network "private_network", ip:' + '"' + @private_network_ip[count].to_s + '"'
-      end
-    elsif @provider[count].to_s.casecmp('DOCKER') == 0
-      if @private_network_ip[count].to_s.casecmp('DHCP') == 0 #true
-        file.puts '    vm' + count.to_s + '.vm.network "private_network",type: "dhcp", docker_network__internal: true'
-      else
-        file.puts '    vm' + count.to_s + '.vm.network "private_network", ip: "'+@private_network_ip[count].to_s+'", docker_network__internal: true'
+        if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
+          if @private_network_ip[count].to_s.casecmp('DHCP') == 0 #true
+            file.puts '    vm' + count.to_s + '.vm.network "private_network", type:"dhcp"'
+          else
+            file.puts '    vm' + count.to_s + '.vm.network "private_network", ip:' + '"' + @private_network_ip[count].to_s + '"'
+          end
+        elsif @provider[count].to_s.casecmp('DOCKER') == 0
+          if @private_network_ip[count].to_s.casecmp('DHCP') == 0 #true
+            file.puts '    vm' + count.to_s + '.vm.network "private_network",type: "dhcp", docker_network__internal: true'
+          else
+            file.puts '    vm' + count.to_s + '.vm.network "private_network", ip: "'+@private_network_ip[count].to_s+'", docker_network__internal: true'
+          end
+        end
       end
     end
-      end
-
   end
+
+  def create_isolate_env(count)
+    @private_network_ip[count] = create_ip.to_s
+  end
+
+  def create_ip # da controllare
+    @i = rand(2..240)
+    bridge = get_bridges[/"(.*?)"/, 1].to_s
+    cmd = 'ifconfig'
+    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
+      @stdout = stdout.read
+    end
+    lines = @stdout.split("\n")
+    for i in 0..lines.length-1
+      if lines[i].match(/#{bridge}/)
+        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
+      end
+    end
+    base = @to_ret.to_s.rpartition('.').first + '.'
+    ip = base.to_s + @i.to_s
+    @statement = active_ip(ip)
+    while @statement
+      @i += 1
+      ip = base.to_s + @i.to_s
+      @statement = active_ip(ip)
+    end
+    ip
+  end
+
+  def host_ip
+    bridge = get_bridges[/"(.*?)"/, 1].to_s
+    cmd = 'ifconfig'
+    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
+      @stdout = stdout.read
+    end
+    lines = @stdout.split("\n")
+    for i in 0..lines.length-1
+      if lines[i].match(/#{bridge}/)
+        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
+      end
+    end
+    @to_ret.to_s
+  end
+
+  def active_ip(ip)
+    cmd = 'ping ' + ip.to_s + ' -w 1'
+    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
+      @stdout = stdout.read
+    end
+    lines = @stdout.split("\n")
+    if lines.length == 4
+      return false
+    end
+    return true
+  end
+
 
   def add_public_network(file, count, pub_subn_VD)
     if @public_network_ip[count].to_s.casecmp('') != 0
@@ -166,9 +332,9 @@ class XmlReader
       if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
         ip = @gateway.to_s[0..-2] + '4'+ count.to_s
 
-        file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge:"' + bridge_interface.to_s + '", ip:"' + ip.to_s + '"'
+        file.puts '    vm' + count.to_s + '.vm.network "public_network", bridge:"' + bridge_interface.delete(' ').to_s + '", ip:"' + ip.to_s + '"'
       else #E' docker
-        file.puts '    vm' + count.to_s + '.vm.network "public_network", type: "dhcp", bridge:"' + bridge_interface.to_s + '", docker_network_gateway:"' + @gateway.to_s + '",docker_network__ip_range: "' + @gateway.to_s + '/24"'
+        file.puts '    vm' + count.to_s + '.vm.network "public_network", type: "dhcp", bridge:"' + bridge_interface.delete(' ').to_s + '", docker_network_gateway:"' + @gateway.to_s + '",docker_network__ip_range: "' + @gateway.to_s + '/24"'
       end
     else
       if @provider[count].to_s.casecmp('VIRTUALBOX') == 0
@@ -194,7 +360,7 @@ class XmlReader
     Open3.popen3(cmd) do |_stdin, stdout, _stderr, _wait_thr|
       @prova = stdout.read
     end
-    return @prova[/\n(.*?)#{sub_name}/, 1].delete(' ')
+    return @prova[/\n(.*?)#{sub_name}/, 1]
   end
 
   def create_docker_network(sub_name)
@@ -333,7 +499,6 @@ class XmlReader
   end
 
   def close_vagrant_file(file)
-    file.puts 'end'
     file.close
   end
 

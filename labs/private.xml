@@ -1,0 +1,43 @@
+<scenario>
+  <description> Si vuole creare una struttura con 1 macchina
+    Linux (Ubuntu) pubblica, una macchina (Slave-Conn) che permetta
+    una connessione su rete privata con l'host e con un' altra macchina
+    (Slave) totalmente isolata.
+  </description>
+
+  <machine>
+    <machine_name>Ubuntu</machine_name>
+    <machine_base>Ubuntu</machine_base>
+    <version>16.04</version>
+    <provider>VirtualBox</provider>
+    <public_network>
+      <ip>dhcp</ip>
+    </public_network>
+  </machine>
+
+  <machine>
+    <machine_name>Slave-Conn</machine_name>
+    <machine_base>Ubuntu</machine_base>
+    <version>16.04</version>
+    <provider>VirtualBox</provider>
+    <private_network>
+      <network_name>fase1</network_name>
+      <host>Y</host>
+      <ip>dhcp</ip>
+    </private_network>
+  </machine>
+
+  <machine>
+    <machine_name>Slave</machine_name>
+    <machine_base>Ubuntu</machine_base>
+    <version>16.04</version>
+    <provider>VirtualBox</provider>
+    <private_network>
+      <network_name>fase1</network_name>
+      <ip>dhcp</ip>
+    </private_network>
+  </machine>
+
+
+
+</scenario>
