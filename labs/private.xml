@@ -21,19 +21,15 @@
     <version>16.04</version>
     <provider>VirtualBox</provider>
     <private_network>
-      <network_name>fase1</network_name>
-      <host>Y</host>
       <ip>dhcp</ip>
     </private_network>
   </machine>
 
   <machine>
     <machine_name>Slave</machine_name>
-    <machine_base>Ubuntu</machine_base>
-    <version>16.04</version>
-    <provider>VirtualBox</provider>
+    <docker_image>tknerr/baseimage-ubuntu-16.04</docker_image>
+    <provider>Docker</provider>
     <private_network>
-      <network_name>fase1</network_name>
       <ip>dhcp</ip>
     </private_network>
   </machine>

@@ -46,13 +46,8 @@ class StopProject
 
   # Stop the machines in the project
   def stop_all(args)
-    if $os.to_s.eql? 'windows'
-      path_to_folder = $path_folder + '\\' + args[0].to_s
-      cmd = 'powershell.exe cd ' + path_to_folder.to_s + ';' + ' vagrant halt'
-    else
-      path_to_folder = $path_folder + '/' + args[0].to_s
-      cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant halt'
-    end
+    path_to_folder = $path_folder + '/' + args[0].to_s
+    cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant halt'
     Open3.popen3(cmd) do |_stdin, stdout, _stderr, _wait_thr|
       while (line = stdout.gets)
         puts line

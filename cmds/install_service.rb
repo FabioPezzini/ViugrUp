@@ -16,11 +16,7 @@ class InstallService
 
   def parse_args(args)
     begin
-      if $os.to_s.eql? 'windows'
-        @separator = '\\'
-      else
-        @separator = '/'
-      end
+      @separator = '/'
       @path_project = $path_folder + @separator + args[0].to_s
       raise NotFound, "Project doesn't exist" unless Dir.exist?(@path_project)
 

@@ -21,7 +21,7 @@ class Lamp
     if value == false
       Dir.mkdir(@path_proj_apache)
       Dir.mkdir(@path_proj_apache + @separator +'manifests')
-      FileUtils.cp("modules/LAMP/apache.pp",@path_proj_apache + @separator +'manifests')
+      FileUtils.cp("modules/LAMP/apache.pp" + @path_proj_apache + @separator +'manifests')
       File.rename(@path_proj_apache + @separator + 'manifests' + @separator + 'apache.pp',@path_proj_apache + @separator +'manifests' + @separator + 'init.pp')
     end
     puts 'APACHE INSTALLED IN ' + @name_vm.to_s

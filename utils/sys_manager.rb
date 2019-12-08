@@ -8,13 +8,10 @@ require './exceptions/not_found'
 class SysManager
   def initialize
     if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
-      $path_roaming = ENV['APPDATA'].to_s
-      $path_folder = $path_roaming.to_s + '\\' + 'viugrup'
-      $os = 'windows'
+      raise NotFound, 'OS not compatible with ViugrUp'
     else
       $path_roaming = '/opt/'
       $path_folder = $path_roaming.to_s + 'viugrup'
-      $os = 'linux'
     end
 
   end

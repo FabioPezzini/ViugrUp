@@ -95,11 +95,7 @@ class CreateProject
     puts 'Validating boxes...'
     counter = @num_vm - 1
     (0...@num_vm).each do |a|
-      if $os.to_s.eql? 'windows'
-        cmd = 'powershell.exe vagrant box add --provider virtualbox ' + @vm_box[a].to_s
-      else
-        cmd =  'vagrant box add --provider virtualbox ' + @vm_box[a].to_s
-      end
+      cmd =  'vagrant box add --provider virtualbox ' + @vm_box[a].to_s
       Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
         while (line = stdout.gets)
           puts line
@@ -129,15 +125,11 @@ class CreateProject
 
   def create_vfile
     print 'Creating config file...'
-    if $os.to_s.eql? 'windows'
-      path = $path_folder + '\\' + @project_name
-      Dir.mkdir(path.to_s)
-      file = File.open(path.to_s + '\\' + 'Vagrantfile', 'w')
-    else
-      path = $path_folder + '/' + @project_name
-      Dir.mkdir(path.to_s)
-      file = File.open(path.to_s + '/' + 'Vagrantfile', 'w')
-    end
+
+    path = $path_folder + '/' + @project_name
+    Dir.mkdir(path.to_s)
+    file = File.open(path.to_s + '/' + 'Vagrantfile', 'w')
+
     write_file(file)
     puts 'Config file CREATED!'
   end

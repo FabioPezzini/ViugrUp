@@ -47,23 +47,17 @@ class RunProject
 
   def run_all(args)
     ps = ProjectStatus.new
-    if $os.to_s.eql? 'windows'
-      path_to_folder = $path_folder + '\\' + args[0].to_s
-    else
-      path_to_folder = $path_folder + '/' + args[0].to_s
-    end
+
+    path_to_folder = $path_folder + '/' + args[0].to_s
     value = ps.project_status(path_to_folder)
-    if $os.to_s.eql? 'windows'
-      cmd = 'powershell.exe cd ' + path_to_folder.to_s + ';' + ' vagrant up' if value == -1
-      cmd = 'powershell.exe cd ' + path_to_folder.to_s + ';' + ' vagrant reload --provision' if value == 0
-    else
-      cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant up' if value == -1
-      cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant reload --provision' if value == 0
-    end
-    Open3.popen3(cmd) do |_stdin, stdout, _stderr, _wait_thr|
+
+    cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant up' if value == -1
+    cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant reload --provision' if value == 0
+    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
       while (line = stdout.gets)
         puts line
       end
+      puts stderr.read
     end
     to_print = 'INFO:' + 'Project started successfully'
     puts to_print.colorize(:light_blue)

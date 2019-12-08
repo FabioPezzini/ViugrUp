@@ -2,13 +2,8 @@
 
 class VagrantFileReader
   def initialize(folder)
-    if $os.to_s.eql? 'windows'
-      path_project = $path_folder + '\\' + folder.to_s
-      @file_path = path_project + '\\' + 'Vagrantfile'
-    else
-      path_project = $path_folder + '/' + folder.to_s
-      @file_path = path_project + '/' + 'Vagrantfile'
-    end
+    path_project = $path_folder + '/' + folder.to_s
+    @file_path = path_project + '/' + 'Vagrantfile'
   end
 
   def read
