@@ -61,7 +61,8 @@ class CreateProject
     (1..@num_vm.to_i).each do |a|
       print '!!!> ' + 'Insert the OS for the ' + a.to_s + ' Vm: '
       @input = gets
-      scraper = BoxGetter.new(@input)
+      scraper = BoxGetter.new
+      scraper.scrape(@input)
       name = scraper.get_name
       desc = scraper.get_desc
       counter = 0
