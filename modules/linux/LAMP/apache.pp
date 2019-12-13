@@ -3,8 +3,7 @@ class apache
     package
       {
         "apache2":
-          ensure  => present,
-          require => Exec['apt-get update']
+          ensure  => present
       }
 
     service

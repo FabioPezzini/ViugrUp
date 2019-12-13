@@ -102,6 +102,7 @@ class XmlReader
       add_machine_provider(file, i) if @provider[i].to_s != nil
       add_public_network(file, i) if !@public_network_ip[i].nil?
       add_private_network(file, i) if !@private_network_ip[i].nil?
+      add_shell_provision(file,i)
       file.puts '  end'
     end
 
@@ -115,6 +116,13 @@ class XmlReader
     file = File.open($path_folder + @separator + @project_name + @separator + 'Vagrantfile', 'a')
     file.puts 'end'
     file.close
+  end
+
+  def add_shell_provision(file,count)
+    if @machine_base[count].to_s.casecmp('WINDOWS') == 0 #Se e' windows.xml
+      path_chocolatey = Dir.pwd.to_s + '/' + 'modules/windows/shell/InstallChocolatey.ps1'
+      file.puts '    vm' + count.to_s + '.vm.provision :shell, privileged: "true", :path => "' + path_chocolatey.to_s + '"'
+    end
   end
 
 
@@ -181,7 +189,11 @@ class XmlReader
   # Insert in Vagrantfile the hostname and the timeout for the boot
   def add_machine_name(file, count)
     file.puts '    vm' + count.to_s + '.vm.hostname = "' + @machine_name[count].to_s + '"'
-    file.puts '    vm' + count.to_s + '.vm.boot_timeout = 60'
+    file.puts '    vm' + count.to_s + '.vm.boot_timeout = 120'
+    if @machine_base[count].to_s.casecmp('WINDOWS') == 0 #se il box e' Windows
+      file.puts '    vm' + count.to_s + '.vm.guest = :windows'
+      file.puts '    vm' + count.to_s + '.vm.communicator = :winrm'
+    end
   end
 
   def add_machine_provider(file, count)

@@ -1,5 +1,5 @@
 require './utils/vagrantfile_reader'
-require './modules/LAMP/LAMP_m'
+require './modules/linux/LAMP/LAMP_m'
 
 class InstallService
   def initialize(args)
@@ -16,8 +16,7 @@ class InstallService
 
   def parse_args(args)
     begin
-      @separator = '/'
-      @path_project = $path_folder + @separator + args[0].to_s
+      @path_project = $path_folder + '/' + args[0].to_s
       raise NotFound, "Project doesn't exist" unless Dir.exist?(@path_project)
 
       @name_vm = args[1].to_s
@@ -39,16 +38,16 @@ class InstallService
 
 
   def create_puppet_folders
-    path_puppet = @path_project + @separator + 'puppet'
-    path_manifest = path_puppet + @separator + 'manifests'
-    path_module = path_puppet + @separator + 'modules'
+    path_puppet = @path_project + '/puppet'
+    path_manifest = path_puppet + '/manifests'
+    path_module = path_puppet + '/modules'
     value = File.exist?(path_puppet.to_s)
     if value == false
       Dir.mkdir(path_puppet)
       Dir.mkdir(path_manifest)
       Dir.mkdir(path_module)
     end
-    puppet_file = path_manifest + @separator + @name_vm.to_s + '.pp'
+    puppet_file = path_manifest + '/' + @name_vm.to_s + '.pp'
     unless File.exist?puppet_file
       File.open(puppet_file, 'w')
       add_provision_vagrantfile

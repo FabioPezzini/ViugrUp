@@ -1,10 +1,19 @@
 # ViugrUp
 
 ## Installation
+ViugrUp is only avaible on Linux systems, you will need to install the following:
 - Ruby (development): https://www.ruby-lang.org/en/
 - Vagrant: http://www.vagrantup.com/
 - Virtual Box: https://www.virtualbox.org/
 - [OPTIONAL] Docker: https://www.docker.com/
+
+Git clone Viugrup to a directory of your choosing, such as /home/user/bin/viugrup , N.B = don't install in /opt
+Then install gems:
+```sh
+cd /home/user/bin/viugrup
+bundle install
+```
+
 
 ## How Use Xml Scenario
 N.B = Use the labs in the `/labs` dir as a starting point to create your own.
@@ -38,7 +47,8 @@ Between the machine's tag of the selected machine you can add:
   N.B = Use this tag only for the communication between VirtualBox VM and Docker Container
   2. Inside the public_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 192.168.1.24) or you can insert
   `dhcp` to leave at the wrapper the the burden of choice.
-  N.B = The use of `dhcp` is recommended.
+  N.B = The use of `dhcp` is recommended.on windows
+  
  
 - Private Network: an interface that will make the machine accessible only by the host and the other machines in same network.
 

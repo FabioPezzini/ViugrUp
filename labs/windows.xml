@@ -1,0 +1,13 @@
+<scenario>
+  <description> Macchina Windows con Chocolatey
+  </description>
+
+  <machine>
+    <machine_name>WServer</machine_name>
+    <machine_base>Windows</machine_base>
+    <provider>VirtualBox</provider>
+    <private_network>
+      <ip>dhcp</ip>
+    </private_network>
+  </machine>
+</scenario>

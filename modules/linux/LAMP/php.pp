@@ -15,8 +15,7 @@ class php
       package
         {
             $packages:
-              ensure  => present,
-              require => Exec['apt-get update']
+              ensure  => present
         }
 
       exec
