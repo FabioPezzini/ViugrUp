@@ -6,8 +6,8 @@
   </description>
 
   <machine>
-    <machine_name>Debian</machine_name>
-    <machine_base>Debian</machine_base>
+    <machine_name>Ubuntu</machine_name>
+    <machine_base>Ubuntu</machine_base>
     <provider>VirtualBox</provider>
     <private_network>
       <ip>dhcp</ip>

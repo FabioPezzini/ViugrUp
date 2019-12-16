@@ -120,7 +120,7 @@ class XmlReader
 
   def add_shell_provision(file,count)
     if @machine_base[count].to_s.casecmp('WINDOWS') == 0 #Se e' windows.xml
-      path_chocolatey = Dir.pwd.to_s + '/' + 'modules/windows/shell/InstallChocolatey.ps1'
+      path_chocolatey = Dir.pwd.to_s + '/modules/windows/shell/InstallChocolatey.ps1'
       file.puts '    vm' + count.to_s + '.vm.provision :shell, privileged: "true", :path => "' + path_chocolatey.to_s + '"'
     end
   end
@@ -192,7 +192,6 @@ class XmlReader
     file.puts '    vm' + count.to_s + '.vm.boot_timeout = 120'
     if @machine_base[count].to_s.casecmp('WINDOWS') == 0 #se il box e' Windows
       file.puts '    vm' + count.to_s + '.vm.guest = :windows'
-      file.puts '    vm' + count.to_s + '.vm.communicator = :winrm'
     end
   end
 

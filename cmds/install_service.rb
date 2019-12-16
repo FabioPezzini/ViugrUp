@@ -1,5 +1,6 @@
 require './utils/vagrantfile_reader'
-require './modules/linux/LAMP/LAMP_m'
+require './modules/linux/MYSQL/MYSQL_m'
+require './modules/linux/APACHE/APACHE_m'
 
 class InstallService
   def initialize(args)
@@ -39,15 +40,13 @@ class InstallService
 
   def create_puppet_folders
     path_puppet = @path_project + '/puppet'
-    path_manifest = path_puppet + '/manifests'
     path_module = path_puppet + '/modules'
     value = File.exist?(path_puppet.to_s)
     if value == false
       Dir.mkdir(path_puppet)
-      Dir.mkdir(path_manifest)
       Dir.mkdir(path_module)
     end
-    puppet_file = path_manifest + '/' + @name_vm.to_s + '.pp'
+    puppet_file = path_puppet + '/' + @name_vm.to_s + '.pp'
     unless File.exist?puppet_file
       File.open(puppet_file, 'w')
       add_provision_vagrantfile
@@ -62,7 +61,7 @@ class InstallService
   end
 
   def parse_module
-    Lamp.new(@file_name,@name_vm) if @module == '--lamp'
+    MySQL.new(@file_name,@name_vm) if @module == '--mysql'
+    Apache.new(@file_name,@name_vm) if @module == '--apache'
   end
-
 end

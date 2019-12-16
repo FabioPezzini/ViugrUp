@@ -90,8 +90,9 @@ class VagrantFileReader
   def write_provision(vm_name,file)
     file.puts ''
     file.puts '    ' + @custom.to_s + '.vm.provision "shell", inline: "sudo apt-get update && sudo apt-get install -y puppet"'
+    #file.puts '    '  + @custom.to_s + '.vm.provision "shell", inline: "puppet module install puppetlabs-translate"'
     file.puts '    ' + @custom.to_s + '.vm.provision' + ' "' + 'puppet' + '" ' + 'do |puppet|'
-    file.puts '      ' + "puppet.manifests_path = 'puppet/manifests'"
+    file.puts '      ' + "puppet.manifests_path = 'puppet/'"
     file.puts '      ' + "puppet.module_path = 'puppet/modules'"
     file.puts '      ' + "puppet.manifest_file = " + '"' + vm_name.to_s + '.pp' + '"'
     file.puts '    ' + 'end'
