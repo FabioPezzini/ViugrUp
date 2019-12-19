@@ -5,7 +5,7 @@ ViugrUp is only avaible on Linux systems, you will need to install the following
 - Ruby (development): https://www.ruby-lang.org/en/
 - Vagrant: http://www.vagrantup.com/
 - Virtual Box: https://www.virtualbox.org/
-- [OPTIONAL] Docker: https://www.docker.com/
+- Docker: https://www.docker.com/
 
 Git clone Viugrup to a directory of your choosing, such as /home/user/bin/viugrup , N.B = don't install in /opt
 Then install gems:
@@ -41,18 +41,18 @@ Between the machine's tag of the selected machine you can add:
 - Public Network: an interface that will make the machine accessible anywhere (LAN,...).
 
   Add a tag `<public_network></public_network>`:
-  1. [OPTIONAL] If you are using a scenario with different VirtualBox VM and Docker Container and you want them to be able to communicate through their public ip,
-  inside previous tag add a tag `<network_name></network_name>` Inside this tag write the name of the network (ex: net1), add it to
-  all the machines that you prefer.
-  N.B = Use this tag only for the communication between VirtualBox VM and Docker Container
-  2. Inside the public_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 192.168.1.24) or you can insert
-  `dhcp` to leave at the wrapper the the burden of choice.
+  1. Inside the public_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 192.168.1.24) or you can insert
+     `dhcp` to leave at the wrapper the the burden of choice.
   N.B = The use of `dhcp` is recommended.on windows
   
  
 - Private Network: an interface that will make the machine accessible only by the host and the other machines in same network.
 
   Add a tag `<private_network></private_network>`:
-   1. Inside the private_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 172.17.0.12) or you can insert
-    `dhcp` to leave at the wrapper the the burden of choice.
-    N.B = The use of `dhcp` is recommended.
+  1. [OPTIONAL] If you are using a scenario with different VirtualBox VM and you want to isolate a group of them for each machine
+     add a tag `<network_name></network_name>` Inside this tag write the name of the network (ex: net1), add it to
+     all the machines that you want isolate together.
+      N.B = Use this tag only for the communication between VirtualBox VM and Docker Container
+  2. Inside the private_network's tag add a tag `<ip></ip>`, between you can insert the a custom ip (ex 172.17.0.12) or you can insert
+     `dhcp` to leave at the wrapper the the burden of choice.
+  N.B = The use of `dhcp` is recommended.

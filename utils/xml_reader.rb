@@ -21,9 +21,9 @@ class XmlReader
     @machine_base = Array[]
     @machine_version = Array[]
     @provider = Array[]
-    @public_network_name = Array[]
     @public_network_ip = Array[]
     @private_network_ip = Array[]
+    @private_network_name = Array[]
     @docker_image = Array[]
   end
 
@@ -52,22 +52,22 @@ class XmlReader
       @provider.push(machine.at_xpath('provider').content)
       if machine.at_xpath('public_network') != nil
         machine.xpath('//public_network').each do |network|
-          if network.at_xpath('network_name') != nil
-            @public_network_name.push(network.at_xpath('network_name').content)
-          else
-            @public_network_name.push('')
-          end
           @public_network_ip.push(network.at_xpath('ip').content)
         end
       else
-        @public_network_name.push('')
         @public_network_ip.push('')
       end
       if machine.at_xpath('private_network') != nil
         machine.xpath('//private_network').each do |network|
+          if network.at_xpath('network_name') != nil
+            @private_network_name.push(network.at_xpath('network_name').content)
+          else
+            @private_network_name.push('')
+          end
           @private_network_ip.push(network.at_xpath('ip').content)
         end
       else
+        @private_network_name.push('')
         @private_network_ip.push('')
       end
     end
@@ -95,7 +95,7 @@ class XmlReader
   end
 
   def create_machine(file)
-    @net_m = NetworkManager.new(@machine_base,@provider,@public_network_name,@public_network_ip,@private_network_ip)
+    @net_m = NetworkManager.new(@machine_base,@provider,@public_network_ip,@private_network_ip,@private_network_name)
     for i in 0..(@machine_base.length-1)
       file.puts '  config.vm.define "' + @machine_name[i].to_s + '" do |vm' + i.to_s + '|'
       add_machine_name(file, i) if @machine_name[i].to_s != nil
@@ -129,58 +129,6 @@ class XmlReader
   def add_private_network(file,count) # DA CAMBIARE, BISOGNA FARE IL PROVISIONING CON SHELL e solo con vbox
     @net_m.add_private_network(file,count)
   end
-
-  def create_ip # da controllare
-    @i = rand(2..240)
-    bridge = get_bridges[/"(.*?)"/, 1].to_s
-    cmd = 'ifconfig'
-    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
-      @stdout = stdout.read
-    end
-    lines = @stdout.split("\n")
-    for i in 0..lines.length-1
-      if lines[i].match(/#{bridge}/)
-        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
-      end
-    end
-    base = @to_ret.to_s.rpartition('.').first + '.'
-    ip = base.to_s + @i.to_s
-    @statement = active_ip(ip)
-    while @statement
-      @i += 1
-      ip = base.to_s + @i.to_s
-      @statement = active_ip(ip)
-    end
-    ip
-  end
-
-  def host_ip
-    bridge = get_bridges[/"(.*?)"/, 1].to_s
-    cmd = 'ifconfig'
-    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
-      @stdout = stdout.read
-    end
-    lines = @stdout.split("\n")
-    for i in 0..lines.length-1
-      if lines[i].match(/#{bridge}/)
-        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
-      end
-    end
-    @to_ret.to_s
-  end
-
-  def active_ip(ip)
-    cmd = 'ping ' + ip.to_s + ' -w 1'
-    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
-      @stdout = stdout.read
-    end
-    lines = @stdout.split("\n")
-    if lines.length == 4
-      return false
-    end
-    return true
-  end
-
 
   def add_public_network(file, count)
     @net_m.add_public_network(file,count)

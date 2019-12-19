@@ -9,20 +9,23 @@
     <version>16.04</version>
     <provider>VirtualBox</provider>
     <public_network>
-      <network_name>fase1</network_name>
       <ip>dhcp</ip>
     </public_network>
+    <private_network>
+      <network_name>fase1</network_name>
+      <ip>dhcp</ip>
+    </private_network>
   </machine>
 
   <machine>
     <machine_name>Slave-Conn</machine_name>
-    <docker_image>kalilinux/kali-linux-docker</docker_image>
+    <docker_image>tknerr/baseimage-ubuntu-14.04</docker_image>
     <provider>Docker</provider>
     <public_network>
-      <network_name>fase1</network_name>
       <ip>dhcp</ip>
     </public_network>
     <private_network>
+      <network_name>fase1</network_name>
       <ip>dhcp</ip>
     </private_network>
 
