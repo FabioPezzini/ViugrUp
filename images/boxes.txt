@@ -4,5 +4,5 @@ Ubuntu14.04 : ubuntu/trusty64
 Debian9 : generic/debian9
 Debian8 : debian/jessie64
 CentOS7 : centos/7
-Windows: opentable/win-2012r2-standard-amd64-nocm
+Windows : opentable/win-2012r2-standard-amd64-nocm
 Windows10 : senglin/win-10-enterprise-vs2015community

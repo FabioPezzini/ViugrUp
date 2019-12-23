@@ -11,9 +11,14 @@ class BoxGetter
     @desc = Array[]
   end
 
-  def scrape(value)
-    url = 'https://app.vagrantup.com/boxes/search?utf8=%E2%9C%93&sort=downloads&provider=virtualbox&q='
-    unparsed_page = HTTParty.get(url + value.to_s)
+  # Scrape VagrantCloud to retrieve box id
+  def scrape(value,provider)
+    if provider.to_s.casecmp('VIRTUALBOX') == 0
+      url = 'https://app.vagrantup.com/boxes/search?utf8=%E2%9C%93&sort=downloads&provider=virtualbox&q='
+    elsif  provider.to_s.casecmp('DOCKER') == 0
+      url = 'https://app.vagrantup.com/boxes/search?utf8=%E2%9C%93&sort=downloads&provider=docker&q='
+    end
+      unparsed_page = HTTParty.get(url + value.to_s)
     parsed_page = Nokogiri.HTML(unparsed_page)
     parsed_page.css('div.col-md-5').map do |node|
       @name.push(node.at_css('h4').text.strip)
@@ -21,21 +26,22 @@ class BoxGetter
     end
   end
 
-  def search_box(machine_base,machine_version,box_dir)
-    to_search = machine_base.to_s + machine_version.to_s
+  # Search box id in the txt file (images folder)
+  def search_box(to_search,box_dir,provider)
     File.open(box_dir, 'r') do |f|
       f.each_line do |line|
-        return line.to_s.partition(': ').last if line.match(/^#{to_search}/)
+        return line.to_s.partition(' : ').last if line.to_s.partition(' : ').first.casecmp(to_search) == 0
       end
     end
-    #If it isn't in the txt, that will search in the Vagrant cloud
-    return search_in_cloud(machine_base)
+    #If it isn't in the txt, that will search in the VagrantCloud
+    return search_in_cloud(to_search,provider)
   end
 
-  def search_in_cloud(machine_base)
-    to_print = 'It wasn t possible to find the selected os in the `boxes.txt`, type the number of the alternative otherwise type no to end the search'
+  # Get box id from the VagrantCloud
+  def search_in_cloud(machine_base,provider)
+    to_print = 'It wasn t possible to find the selected os in the `images.txt`, type the number of the alternative otherwise type no to end the search'
     puts to_print.colorize(:green)
-    scrape(machine_base.to_s)
+    scrape(machine_base.to_s,provider)
     name = @name
     desc = @desc
     counter = 0
@@ -46,10 +52,10 @@ class BoxGetter
     end
     print 'Insert number of choosen OS:'
     @input = gets
-    if @input.to_i <= counter && @input.to_i >= 0
+    if @input.to_i < counter && @input.to_i >= 0
       name[@input.to_i].split(' ')[0].to_s
     else
-      raise NotFound, 'No OS is selected, correct the scenario and retry'
+      'nil'
     end
   end
 

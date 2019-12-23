@@ -17,18 +17,6 @@ class MySQL
       FileUtils.copy_entry source, @path_proj_stdlib
     end
     puts '=> Dependendency Stdlib installed in ' + @name_vm.to_s
-    install_translate
-  end
-
-  def install_translate
-    @path_proj_translate = @path_proj_puppet  + '/modules/translate'
-    value = File.exist?(@path_proj_translate)
-    if value == false
-      Dir.mkdir(@path_proj_translate)
-      source = Dir.pwd.to_s + '/modules/linux/dependencies/translate'
-      FileUtils.copy_entry source, @path_proj_translate
-    end
-    puts '=> Dependendency Translate installed in ' + @name_vm.to_s
     install_mysql
   end
 

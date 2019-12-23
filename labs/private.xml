@@ -1,9 +1,5 @@
 <scenario>
-  <description> Si vuole creare una struttura con 1 macchina
-    Linux (Ubuntu) pubblica, una macchina (Slave-Conn) che permetta
-    una connessione su rete privata con l'host e con un' altra macchina
-    (Slave) totalmente isolata.
-  </description>
+  <description>Lab with two Ubuntu VM and one Ubuntu container in private network</description>
 
   <machine>
     <machine_name>Ubuntu</machine_name>
@@ -33,7 +29,5 @@
       <ip>dhcp</ip>
     </private_network>
   </machine>
-
-
 
 </scenario>

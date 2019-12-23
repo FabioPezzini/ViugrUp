@@ -1,6 +1,5 @@
 <scenario>
-  <description> Macchina Windows con Chocolatey
-  </description>
+  <description>Basic Windows Server VM with Chocolatey installed</description>
 
   <machine>
     <machine_name>WServer</machine_name>

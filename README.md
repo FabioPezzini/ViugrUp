@@ -1,5 +1,14 @@
 # ViugrUp
 
+```
+       __   __   __     __  __     ______     ______     __  __     ______  
+      /\ \ / /  /\ \   /\ \/\ \   /\  ___\   /\  == \   /\ \/\ \   /\  == \ 
+      \ \ \'/   \ \ \  \ \ \_\ \  \ \ \__ \  \ \  __<   \ \ \_\ \  \ \  _-/ 
+       \ \__|    \ \_\  \ \_____\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\   
+        \/_/      \/_/   \/_____/   \/_____/   \/_/ /_/   \/_____/   \/_/ 
+```                                                                      
+                                                                      
+                                                                      
 ## Installation
 ViugrUp is only avaible on Linux systems, you will need to install the following:
 - Ruby (development): https://www.ruby-lang.org/en/

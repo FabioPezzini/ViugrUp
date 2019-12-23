@@ -17,18 +17,6 @@ class Apache
       FileUtils.copy_entry source, @path_proj_stdlib
     end
     puts '=> Dependendency Stdlib installed in ' + @name_vm.to_s
-    install_concat
-  end
-
-  def install_concat
-    @path_proj_concat = @path_proj_puppet  + '/modules/concat'
-    value = File.exist?(@path_proj_concat)
-    if value == false
-      Dir.mkdir(@path_proj_concat)
-      source = Dir.pwd.to_s + '/modules/linux/dependencies/concat'
-      FileUtils.copy_entry source, @path_proj_concat
-    end
-    puts '=> Dependendency Concat installed in ' + @name_vm.to_s
     install_apache
   end
 
