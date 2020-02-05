@@ -8,12 +8,12 @@
                    -cloud  <num>  - use a custom box provided in the Vagrant Cloud Boxes
                                     (another line will ask you the box id)
                                  |
-=> run [name] <flag>             |
-               -all               - run the project by name
+=> run [name]                     - run the project by name
                                  |
-=> stop [name] <flag>            |
-                -all              - stop the project by name
+=> stop [name]                    - stop the project by name
                                  |
+=> remove [name]                  - remove the project by name
+                                 |                                 |
 => list <flag>                   |
          -up                      - return a list of current running projects
          -all                     - return a list of created projects

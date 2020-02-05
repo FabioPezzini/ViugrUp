@@ -59,7 +59,7 @@ class NetworkManager
   end
 
 
-  def add_private_network(file,count) # DA CAMBIARE, BISOGNA FARE IL PROVISIONING CON SHELL e solo con vbox
+  def add_private_network(file,count)
     if @private_network_ip[count].to_s.casecmp('') != 0 #Se c'e' una private network
       subn = is_in_a_subn?(count)
       if subn != '' #SE QUINDI LA MACCHINA E' IN UNA SUBN
@@ -139,15 +139,15 @@ class NetworkManager
   end
 
   def get_docker_network(net_id)
-    cmd = 'ifconfig'
+    cmd = 'ip a'
     Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
       @stdout = stdout.read
     end
     interface = 'br-' + net_id.delete(' ').to_s
     lines = @stdout.split("\n")
     for i in 0..lines.length-1
-      if lines[i].match(/#{interface}/)
-        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
+      if lines[i].include?interface
+        return @to_ret =  lines[i+2][/inet (.*?) /, 1].to_s.split('/')[0].to_s
       end
     end
     return @to_ret.to_s
@@ -170,14 +170,14 @@ class NetworkManager
   def create_ip # da controllare
     @i = rand(2..240)
     bridge = get_bridges[/"(.*?)"/, 1].to_s
-    cmd = 'ifconfig'
+    cmd = 'ip a'
     Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
       @stdout = stdout.read
     end
     lines = @stdout.split("\n")
     for i in 0..lines.length-1
-      if lines[i].match(/#{bridge}/)
-        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
+      if lines[i].include?interface
+        @to_ret =  lines[i+2][/inet (.*?) /, 1].to_s.split('/')[0].to_s
       end
     end
     base = @to_ret.to_s.rpartition('.').first + '.'
@@ -193,17 +193,17 @@ class NetworkManager
 
   def host_ip
     bridge = get_bridges[/"(.*?)"/, 1].to_s
-    cmd = 'ifconfig'
+    cmd = 'ip a'
     Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
       @stdout = stdout.read
     end
     lines = @stdout.split("\n")
     for i in 0..lines.length-1
-      if lines[i].match(/#{bridge}/)
-        @to_ret =  lines[i+1][/inet (.*?) /, 1].to_s
+      if lines[i].include?interface
+        return @to_ret =  lines[i+2][/inet (.*?) /, 1].to_s.split('/')[0].to_s
       end
     end
-    @to_ret.to_s
+    return @to_ret.to_s
   end
 
   def active_ip(ip)

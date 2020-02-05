@@ -1,7 +1,7 @@
 require 'colorize'
-require './utils/project_status'
+require 'fileutils'
 
-class RunProject
+class RemoveProject
   def initialize(args)
     if args.length == 1
       check_projects(args)
@@ -9,7 +9,7 @@ class RunProject
       begin
         raise WrongCommandSyntax, 'Wrong syntax for the command'
       rescue WrongCommandSyntax => e
-        puts e.message.colorize(:red)
+        puts e.message
       end
     end
   end
@@ -18,7 +18,7 @@ class RunProject
   def check_projects(args)
     projects = Dir.entries($path_folder).reject { |f| File.directory?(f) || f[0].include?('.') }
     if projects.to_s.include?args[0].to_s
-      run_all(args)
+      remove_all(args)
     else
       begin
         raise NotFound, 'Project ' + args[0].to_s + "doesn't exist"
@@ -28,21 +28,23 @@ class RunProject
     end
   end
 
-  def run_all(args)
-    ps = ProjectStatus.new
-
+  # Stop the machines in the project
+  def remove_all(args)
     path_to_folder = $path_folder + '/' + args[0].to_s
-    value = ps.project_status(path_to_folder)
-
-    cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant up' if value == -1
-    cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant reload --provision' if value == 0
-    Open3.popen3(cmd) do |_stdin, stdout, stderr, _wait_thr|
-      while (line = stdout.gets)
-        puts line
+    puts 'Are you sure you want delete this project?[Y,n]?'
+    dec = gets.chomp
+    if dec.to_s.casecmp('Y') == 0
+      cmd = 'cd ' + path_to_folder.to_s + ';' + ' vagrant destroy -f'
+      Open3.popen3(cmd) do |_stdin, stdout, _stderr, _wait_thr|
+        while (line = stdout.gets)
+          puts line
+        end
       end
-      puts stderr.read
+      FileUtils.rm_rf(path_to_folder)
+      to_print = 'INFO:' + 'Project deleted successfully'
+      puts to_print.colorize(:light_blue)
+    else
+      puts 'Operation canceled'
     end
-    to_print = 'INFO:' + 'Project started successfully'
-    puts to_print.colorize(:light_blue)
   end
 end

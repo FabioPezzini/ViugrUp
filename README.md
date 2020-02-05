@@ -21,6 +21,9 @@ cd /home/user/bin/viugrup
 bundle install
 ```
 
+In order to ensure the wrapper to works properly, allow your user to use all the functionality of Docker.
+Follow this guide,in particular the paragraph about "Manage Docker as a non-root user": https://docs.docker.com/install/linux/linux-postinstall/
+
 
 ## How Use Xml Scenario
 N.B = Use the labs in the `/labs` dir as a starting point to create your own.

@@ -7,6 +7,7 @@ require './cmds/list_project'
 require './cmds/run_project'
 require './cmds/stop_project'
 require './cmds/install_service'
+require './cmds/remove_project'
 require './utils/box_getter'
 
 require './utils/sys_manager'
@@ -22,7 +23,8 @@ begin
     'list' => ListProject,
     'run' => RunProject,
     'stop' => StopProject,
-    'installin' => InstallService
+    'installin' => InstallService,
+    'remove' => RemoveProject
   }
 
   cmd = 'start'

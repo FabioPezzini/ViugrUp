@@ -10,7 +10,7 @@ class SysManager
     if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
       raise NotFound, 'OS not compatible with ViugrUp'
     else
-      $path_roaming = '/opt/'
+      $path_roaming = Dir.home.to_s + '/Documents/'
       $path_folder = $path_roaming.to_s + 'viugrup'
     end
 

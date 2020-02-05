@@ -19,7 +19,7 @@
 
   <machine>
     <machine_name>Slave-Conn</machine_name>
-    <docker_image>tknerr/baseimage-ubuntu-14.04</docker_image>
+    <docker_image>Ubuntu14.04</docker_image>
     <provider>Docker</provider>
     <public_network>
       <ip>dhcp</ip>
