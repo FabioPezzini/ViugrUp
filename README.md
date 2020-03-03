@@ -42,7 +42,7 @@ conflict
 
 ### Docker Container
 1. Add a tag `<machine></machine>`,  inside the tag you will have to enter all the settings of the machine, in a single file it is possible to create more machines.
-2. Inside the machine's tag add a tag `<machine_base></machine_base>` between the tag put the OS of the VM that you want to use.
+2. Inside the machine's tag add a tag `<machine_base></machine_base>` between the tag put the OS of the Container that you want to use.
 3. [OPTIONAL] Inside the machine's tag add a tag `<version></version>` between the tag put the version of the OS.
 4. Inside the machine's tag add a tag `<provider>Docker</provider>` this will serve the wrapper to manage the creation of the machine.
 5. Define the network's interface of the machine, you can define 0 or more interfaces
