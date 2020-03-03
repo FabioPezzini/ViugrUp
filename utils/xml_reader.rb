@@ -23,7 +23,6 @@ class XmlReader
     @public_network_ip = Array[]
     @private_network_ip = Array[]
     @private_network_name = Array[]
-    @docker_image = Array[]
   end
 
   #Parse the xml file
@@ -38,11 +37,6 @@ class XmlReader
         @machine_base.push(machine.at_xpath('machine_base').content)
       else
         @machine_base.push('')
-      end
-      if machine.at_xpath('docker_image') != nil
-        @docker_image.push(machine.at_xpath('docker_image').content)
-      else
-        @docker_image.push('')
       end
       if machine.at_xpath('version') != nil
         @machine_version.push(machine.at_xpath('version').content)
@@ -161,9 +155,9 @@ class XmlReader
       file.puts '    vm' + count.to_s + '.vm.provider "virtualbox"'
     end
     if @provider[count].to_s.casecmp('DOCKER') == 0
-      if !@docker_image[count].to_s.empty?
+      if !@machine_base[count].to_s.empty?
         box_getter = BoxGetter.new
-        box = box_getter.search_box(@docker_image[count].to_s, @container_dir, 'docker').gsub("\n", '')
+        box = box_getter.search_box(@machine_base[count].to_s, @container_dir, 'docker').gsub("\n", '')
         if box.to_s == 'nil'
           abort_installation
           raise NotFound, 'OS Box not found, installation aborted'

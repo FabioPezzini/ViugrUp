@@ -19,10 +19,14 @@ class BoxGetter
       url = 'https://app.vagrantup.com/boxes/search?utf8=%E2%9C%93&sort=downloads&provider=docker&q='
     end
       unparsed_page = HTTParty.get(url + value.to_s)
-    parsed_page = Nokogiri.HTML(unparsed_page)
-    parsed_page.css('div.col-md-5').map do |node|
-      @name.push(node.at_css('h4').text.strip)
-      @desc.push(node.at_css('div').text.strip)
+    if unparsed_page.body.nil? || unparsed_page.body.empty?
+      raise NotFound, 'Error in HTTParty'
+    else
+      parsed_page = Nokogiri.HTML(unparsed_page)
+      parsed_page.css('div.col-md-5').map do |node|
+        @name.push(node.at_css('h4').text.strip)
+        @desc.push(node.at_css('div').text.strip)
+      end
     end
   end
 

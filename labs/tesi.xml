@@ -15,8 +15,20 @@
   </machine>
 
   <machine>
+    <machine_name>VM_B</machine_name>
+    <machine_base>Windows</machine_base>
+    <version>10</version>
+    <provider>VirtualBox</provider>
+
+    <private_network>
+      <network_name>Net_2</network_name>
+      <ip>dhcp</ip>
+    </private_network>
+  </machine>
+
+  <machine>
     <machine_name>CONTAINERB</machine_name>
-    <docker_image>Ubuntu</docker_image>
+    <machine_base>Ubuntu</machine_base>
     <version>14.04</version>
     <provider>Docker</provider>
 
