@@ -1,0 +1,29 @@
+<scenario>
+  <description> Tesi
+  </description>
+
+  <machine>
+    <machine_name>VMA</machine_name>
+    <machine_base>Ubuntu</machine_base>
+    <version>18.04</version>
+    <provider>VirtualBox</provider>
+
+    <private_network>
+      <network_name>Net_2</network_name>
+      <ip>dhcp</ip>
+    </private_network>
+  </machine>
+
+  <machine>
+    <machine_name>CONTAINERB</machine_name>
+    <docker_image>Ubuntu</docker_image>
+    <version>14.04</version>
+    <provider>Docker</provider>
+
+    <private_network>
+      <network_name>Net_2</network_name>
+      <ip>dhcp</ip>
+    </private_network>
+  </machine>
+
+</scenario>

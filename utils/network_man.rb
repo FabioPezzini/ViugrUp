@@ -103,7 +103,7 @@ class NetworkManager
   def create_docker_network(sub_name)
     network_id = check_docker_network(sub_name)
     if network_id.to_s.empty? #Se la subn non e' creata
-      to_print = 'Insert the gateway for the subnet (last with .1),leave blank for autofind it (es 162.0.0.1):'
+      to_print = 'Insert the gateway for the subnet (last with .1),leave blank to autofind it (es 162.0.0.1):'
       print to_print.colorize(:green)
       @gateway = gets.chomp
       if !@gateway.to_s.empty? #Se viene fornito il gateway

@@ -50,7 +50,7 @@ class BoxGetter
       puts counter.to_s + "\t\t\t" + x.split(' ')[0].to_s + "\t\t" + desc[counter].to_s
       counter += 1
     end
-    print 'Insert number of choosen OS:'
+    print 'Choose OS:'
     @input = gets
     if @input.to_i < counter && @input.to_i >= 0
       name[@input.to_i].split(' ')[0].to_s
